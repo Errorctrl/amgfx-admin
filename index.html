@@ -70,6 +70,42 @@
             </table>
         </section>
     </main>
+<div class="card" style="margin-top: 20px; border: 1px solid var(--danger);">
+    <h4>Emergency Broadcast System</h4>
+    <textarea id="kill-reason" placeholder="Type warning message here (e.g., High Volatility Detected)..." 
+        style="width: 100%; height: 60px; background: #000; color: var(--amg); border: 1px solid #222; margin: 10px 0; padding: 10px; border-radius: 5px;"></textarea>
+    
+    <div style="display: flex; gap: 10px;">
+        <button onclick="triggerGlobalKillSwitch()" class="btn-kill" style="flex: 2; padding: 10px; background: var(--danger); color: white; font-weight: bold;">
+            ACTIVATE GLOBAL KILL SWITCH
+        </button>
+        <button onclick="resetSystem()" style="flex: 1; background: #222; color: white; border: none; border-radius: 4px; cursor: pointer;">
+            RESET SYSTEM
+        </button>
+    </div>
+</div>
+
+<script>
+async function triggerGlobalKillSwitch() {
+    const msg = document.getElementById('kill-reason').value || "EMERGENCY STOP: System Paused by Admin.";
+    if (confirm("Stop all trading terminals with this message?")) {
+        await db.collection('system').doc('global_state').set({
+            emergency_stop: true,
+            message: msg,
+            timestamp: new Date()
+        });
+        alert("System Locked Globally.");
+    }
+}
+
+async function resetSystem() {
+    await db.collection('system').doc('global_state').update({
+        emergency_stop: false,
+        message: ""
+    });
+    alert("System Restored.");
+}
+</script>
 
 <script>
     // USE YOUR FIREBASE CONFIG HERE
