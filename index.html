@@ -133,6 +133,26 @@
     // Refresh every 30 seconds
     fetchUsers();
     setInterval(fetchUsers, 30000);
+    async function triggerGlobalKillSwitch() {
+    const confirmation = confirm("⚠️ WARNING: This will stop all active @xdevelops terminals globally. Proceed?");
+    if (confirmation) {
+        await db.collection('system').doc('global_state').set({
+            emergency_stop: true,
+            timestamp: new Date(),
+            message: "EMERGENCY STOP: Market Volatility High."
+        });
+        alert("GLOBAL KILL SWITCH ACTIVATED.");
+    }
+}
+
+// To Reset the system back to normal
+async function resetSystem() {
+    await db.collection('system').doc('global_state').update({
+        emergency_stop: false
+    });
+    alert("System Restored to Normal.");
+}
+
 </script>
 </body>
 </html>
